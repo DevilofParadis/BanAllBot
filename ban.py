@@ -64,38 +64,6 @@ async def ping(e):
         end = datetime.now()
         ms = (end-start).microseconds / 1000
         await event.edit(f"**I'm On** \n\n __Pong__ !! `{ms}` ms")
-
-
-@Riz.on(events.NewMessage(pattern="^/kickall"))
-async def kickall(event):
-   if event.sender_id in SUDO_USERS:
-     if not event.is_group:
-         Reply = f"Noob !! Use This Cmd in Group."
-         await event.reply(Reply)
-     else:
-         await event.delete()
-         RiZ = await event.get_chat()
-         RiZoeLop = await event.client.get_me()
-         admin = RiZ.admin_rights
-         creator = RiZ.creator
-         if not admin and not creator:
-              return await event.reply("I Don't have sufficient Rights !!")
-         RiZoeL = await Riz.send_message(event.chat_id, "**Hello !! I'm Alive**")
-         admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
-         admins_id = [i.id for i in admins]
-         all = 0
-         kimk = 0
-         async for user in event.client.iter_participants(event.chat_id):
-             all += 1
-             try:
-                if user.id not in admins_id:
-                    await event.client.kick_participant(event.chat_id, user.id)
-                    kimk += 1
-                    await asyncio.sleep(0.1)
-             except Exception as e:
-                    print(str(e))
-                    await asyncio.sleep(0.1)
-         await RiZoeL.edit(f"**Users Kicked Successfully ! \n\n Kicked:** `{kimk}` \n **Total:** `{all}`")
     
 
 @Riz.on(events.NewMessage(pattern="^/banall"))
@@ -152,43 +120,6 @@ async def unban(event):
                   p += 1
          await msg.edit("{}: {} unbanned".format(event.chat_id, p))
 
-
-@Riz.on(events.NewMessage(pattern="^/leave"))
-async def _(e):
-    if e.sender_id in SUDO_USERS:
-        rizoel = ("".join(e.text.split(maxsplit=1)[1:])).split(" ", 1)
-        if len(e.text) > 7:
-            bc = rizoel[0]
-            bc = int(bc)
-            text = "Leaving....."
-            event = await e.reply(text, parse_mode=None, link_preview=None )
-            try:
-                await event.client(LeaveChannelRequest(bc))
-                await event.edit("Succesfully Left")
-            except Exception as e:
-                await event.edit(str(e))   
-        else:
-            bc = e.chat_id
-            text = "Leaving....."
-            event = await e.reply(text, parse_mode=None, link_preview=None )
-            try:
-                await event.client(LeaveChannelRequest(bc))
-                await event.edit("Succesfully Left")
-            except Exception as e:
-                await event.edit(str(e))   
-          
-
-@Riz.on(events.NewMessage(pattern="^/restart"))
-async def restart(e):
-    if e.sender_id in SUDO_USERS:
-        text = "__Restarting__ !!!"
-        await e.reply(text, parse_mode=None, link_preview=None )
-        try:
-            await Riz.disconnect()
-        except Exception:
-            pass
-        os.execl(sys.executable, sys.executable, *sys.argv)
-        quit()
 
 
 print("\n\n")
